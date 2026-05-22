@@ -39,7 +39,7 @@ jobs:
       - name: Prepare environment
         run: |
           sudo apt update
-          sudo apt install libtool-bin gperf python3-docutils autopoint gettext
+          sudo apt install libtool-bin libtool gperf python3-docutils autopoint gettext libltdl-dev
       - name: Run shellcheck
         run: sh ./trunk/tools/shellcheck.sh
       - name: Prepare toolchain
