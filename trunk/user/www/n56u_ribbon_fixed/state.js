@@ -430,6 +430,10 @@ if (found_app_mentohust()){
 	mentohust_array = new Array("","mentohust.asp","mentohust_log.asp");
 	tablink[13] = (mentohust_array);
 }
+if (found_app_kumasocks()){
+	kumasocks_array = new Array("","Advanced_kumasocks.asp");
+	tablink[14] = (kumasocks_array);
+}
 
 //Level 2 Menu
 menuL2_title = new Array(15)
@@ -450,6 +454,9 @@ if (found_app_mentohust()){
 	menuL2_title.push("mentohust");
 } else menuL2_title.push("");
 
+if (found_app_kumasocks()){
+	menuL2_title.push("KumaSocks");
+} else menuL2_title.push("");
 
 menuL2_link  = new Array("", tablink[0][1], tablink[1][1], tablink[2][1], tablink[3][1], tablink[4][1], tablink[5][1], tablink[6][1], tablink[7][1], support_2g_radio() ? tablink[8][1] : "Main_EStatus_Content.asp", tablink[9][1]);
 if (found_app_scutclient()){
@@ -466,6 +473,10 @@ if (found_app_shadowsocks()){
 
 if (found_app_mentohust()){
 	menuL2_link.push(mentohust_array[1]);
+} else menuL2_link.push("");
+
+if (found_app_kumasocks()){
+	menuL2_link.push(kumasocks_array[1]);
 } else menuL2_link.push("");
 
 //Level 1 Menu in Gateway, Router mode

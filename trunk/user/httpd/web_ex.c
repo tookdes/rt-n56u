@@ -250,6 +250,10 @@ sys_script(char *name)
 	{
 		notify_rc("restart_dms_rescan");
 	}
+	else if (strcmp(name,"restart_kumasocks") == 0)
+	{
+		notify_rc(RCN_RESTART_KUMASOCKS);
+	}
 	else if (strstr(scmd, " ") == 0) // no parameter, run script with eval
 	{
 		eval(scmd);
@@ -2243,6 +2247,11 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int found_app_dnsforwarder = 0;
 #endif
+#if defined(APP_KUMASOCKS)
+	int found_app_kumasocks = 1;
+#else
+	int found_app_kumasocks = 0;
+#endif
 #if defined(APP_XUPNPD)
 	int found_app_xupnpd = 1;
 #else
@@ -2413,6 +2422,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_app_vlmcsd() { return %d;}\n"
 		"function found_app_napt66() { return %d;}\n"
 		"function found_app_dnsforwarder() { return %d;}\n"
+		"function found_app_kumasocks() { return %d;}\n"
 		"function found_app_shadowsocks() { return %d;}\n"
 		"function found_app_xupnpd() { return %d;}\n"
 		"function found_app_mentohust() { return %d;}\n",
@@ -2435,6 +2445,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_app_vlmcsd,
 		found_app_napt66,
 		found_app_dnsforwarder,
+		found_app_kumasocks,
 		found_app_shadowsocks,
 		found_app_xupnpd,
 		found_app_mentohust
@@ -3738,6 +3749,24 @@ do_syslog_file(const char *url, FILE *stream)
 	fputs("\r\n", stream); /* terminator */
 }
 
+#if defined(APP_BANDWIDTHD)
+static void
+do_bandwidthd_file(const char *url, FILE *stream)
+{
+	char path[PATH_MAX];
+	const char *name = url;
+
+	if (strncmp(name, "bandwidthd/", 11) == 0)
+		name += 11;
+
+	if (*name == '\0')
+		name = "lljk.html";
+
+	snprintf(path, sizeof(path), "/etc/storage/bandwidthd/%s", name);
+	do_file(path, stream);
+}
+#endif
+
 #if defined(APP_OPENVPN)
 static void
 do_export_ovpn_client(const char *url, FILE *stream)
@@ -3821,6 +3850,13 @@ struct mime_handler mime_handlers[] = {
 	{ "**.jpg", "image/jpeg", NULL, NULL, do_file, 0 }, // 2012.06 Eagle23
 	{ "**.ico", "image/x-icon", NULL, NULL, do_file, 0 }, // 2013.04 Eagle23
 	{ "**.svg", "image/svg+xml", NULL, NULL, do_file, 0 }, // 2016.04 Volt1
+
+#if defined(APP_BANDWIDTHD)
+	/* Bandwidthd reports are generated plain HTML and must not pass EJ parsing. */
+	{ "bandwidthd/**.htm*", "text/html", no_cache_IE, NULL, do_bandwidthd_file, 1 },
+	{ "bandwidthd/**.png", "image/png", no_cache_IE, NULL, do_bandwidthd_file, 1 },
+	{ "bandwidthd/**.gif", "image/gif", no_cache_IE, NULL, do_bandwidthd_file, 1 },
+#endif
 
 	/* no-cached html/asp files with translations */
 	{ "**.htm*", "text/html", no_cache_IE, do_html_apply_post, do_ej, 1 },

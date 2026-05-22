@@ -119,6 +119,7 @@ dir_y						+= infosvr
 dir_y						+= inadyn
 dir_y						+= miniupnpd
 dir_y						+= dnsmasq
+dir_$(CONFIG_FIRMWARE_INCLUDE_KUMASOCKS)		+= kumasocks
 dir_y						+= igmpproxy
 dir_y						+= udpxy
 dir_y						+= utils
@@ -148,6 +149,8 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_WIREGUARD),y)
 dir_y += wireguard-go
 dir_y += wireguard-tools
 endif
+dir_$(CONFIG_FIRMWARE_INCLUDE_NAIVEPROXY)				+= naiveproxy
+dir_$(CONFIG_FIRMWARE_INCLUDE_BANDWIDTHD)				+= bandwidthd
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SMBD36),y)
 dir_$(SAMBA_ENABLED)				+= samba36
 dir_y							+= wsdd2

@@ -1313,6 +1313,12 @@ handle_notifications(void)
 			restart_vlmcsd();
 		}
 #endif
+#if defined(APP_KUMASOCKS)
+		else if (strcmp(entry->d_name, RCN_RESTART_KUMASOCKS) == 0)
+		{
+			restart_kumasocks();
+		}
+#endif
 #if defined(APP_DNSFORWARDER)
 		else if (strcmp(entry->d_name, RCN_RESTART_DNSFORWARDER) == 0)
 		{

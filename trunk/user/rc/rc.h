@@ -553,6 +553,11 @@ void stop_dnsforwarder(void);
 void start_dnsforwarder(void);
 void restart_dnsforwarder(void);
 #endif
+#if defined(APP_KUMASOCKS)
+void stop_kumasocks(void);
+void start_kumasocks(void);
+void restart_kumasocks(void);
+#endif
 
 /* services_ex.c */
 int fill_dnsmasq_servers(void);

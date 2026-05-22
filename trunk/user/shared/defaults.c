@@ -554,6 +554,15 @@ struct nvram_pair router_defaults[] = {
 	{ "dns_forwarder_server", "8.8.4.4:53" },
 #endif
 
+#if defined(APP_KUMASOCKS)
+	/* kumasocks */
+	{ "kumasocks_enable", "0" },
+	{ "kumasocks_bind", "0.0.0.0:1080" },
+	{ "kumasocks_server", "" },
+	{ "kumasocks_auth", "" },
+	{ "kumasocks_loglvl", "2" },
+#endif
+
 #if defined(APP_SHADOWSOCKS)
 	/* shadowsocks */
 	{ "ss_type", "0" }, //0=ss, 1=ssr

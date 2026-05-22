@@ -26,6 +26,27 @@
 
 #include "rc.h"
 
+#if defined(APP_BANDWIDTHD)
+static void
+start_bandwidthd(void)
+{
+	if (access("/etc/storage/bandwidthd", F_OK) != 0)
+		mkdir("/etc/storage/bandwidthd", 0755);
+	if (access("/etc/storage/bandwidthd/htdocs", F_OK) != 0)
+		mkdir("/etc/storage/bandwidthd/htdocs", 0755);
+	if (access("/www/bandwidthd", F_OK) != 0)
+		symlink("/etc/storage/bandwidthd", "/www/bandwidthd");
+	if (!pids("bandwidthd"))
+		doSystem("%s %s %s", "/usr/bin/bandwidthd", "-c", "/etc_ro/bandwidthd.conf");
+}
+
+static void
+stop_bandwidthd(void)
+{
+	doSystem("killall %s %s", "-q", "bandwidthd");
+}
+#endif
+
 void
 stop_syslogd(void)
 {
@@ -303,6 +324,23 @@ void start_ttyd(void){
 void restart_ttyd(void){
 	stop_ttyd();
 	start_ttyd();
+}
+#endif
+
+#if defined(APP_KUMASOCKS)
+void stop_kumasocks(void){
+	eval("/usr/bin/kumasocks.sh","stop");
+}
+
+void start_kumasocks(void){
+	int kumasocks_enable = nvram_get_int("kumasocks_enable");
+	if ( kumasocks_enable == 1)
+		eval("/usr/bin/kumasocks.sh","start");
+}
+
+void restart_kumasocks(void){
+	stop_kumasocks();
+	start_kumasocks();
 }
 #endif
 
@@ -615,6 +653,9 @@ start_services_once(int is_ap_mode)
 #if defined(APP_VLMCSD)
 	start_vlmcsd();
 #endif
+#if defined(APP_BANDWIDTHD)
+	start_bandwidthd();
+#endif
 	start_lltd();
 	start_watchdog_cpu();
 	start_crond();
@@ -622,6 +663,9 @@ start_services_once(int is_ap_mode)
 	start_rstats();
 #if defined(APP_MENTOHUST)
 	start_mentohust();
+#endif
+#if defined(APP_KUMASOCKS)
+	start_kumasocks();
 #endif
 	return 0;
 }
@@ -652,12 +696,18 @@ stop_services(int stopall)
 #if defined(APP_MENTOHUST)
 	stop_mentohust();
 #endif
+#if defined(APP_KUMASOCKS)
+	stop_kumasocks();
+#endif
 #if defined(APP_TTYD)
 	stop_ttyd();
 #endif
 	stop_networkmap();
 	stop_lltd();
 	stop_detect_internet();
+#if defined(APP_BANDWIDTHD)
+	stop_bandwidthd();
+#endif
 	stop_rstats();
 	stop_infosvr();
 	stop_crond();
